@@ -8,6 +8,20 @@ edgeRE=re.compile("(\\d+)\\s(\\d+)\\s(\\d+)")
 
 def BellmanFord(G):
     pathPairs=[]
+    d = []
+
+    for a in range(len(G[0])): # update every source node
+        for b in range(len(G[0])):
+            d.append(float("inf"))
+        d[a] = 0
+        for c in range(1, len(G[0])-1):
+            for e in range(len(G[0])): #iterate nodes to find possible edges
+                for f in range(len(G[0])):
+                    if float(G[1][e][f]) < float("inf"): #This checks to see if an edge exists
+                        if d[f] > d[e] + float(G[1][e][f]): #Then is checks to see if there is a better value
+                            d[f] = int(d[e]) + int(float(G[1][e][f]))
+        pathPairs.append(d)
+        d = []
     # Fill in your Bellman-Ford algorithm here
     # The pathPairs will contain a matrix of path lengths:
     #    0   1   2 
@@ -15,6 +29,7 @@ def BellmanFord(G):
     # 1 x10 x11 x12
     # 2 x20 x21 x22
     # Where xij is the length of the shortest path between i and j
+   
     return pathPairs
 
 def FloydWarshall(G):
@@ -57,14 +72,12 @@ def readFile(filename):
                 quit(1)
             weight=edgeMatch.group(3)
             edges[int(source)][int(sink)]=weight
-    # TODO: Debugging
-    #for i in G:
-        #print(i)
+
     return (vertices,edges)
 
 def writeFile(lengthMatrix,filename):
     filename=os.path.splitext(os.path.split(filename)[1])[0]
-    outFile=open('output/'+filename+'_output.txt','w')
+    outFile=open('output/'+filename+'_output.txt','w+')
     for vertex in lengthMatrix:
         for length in vertex:
             outFile.write(str(length)+',')
